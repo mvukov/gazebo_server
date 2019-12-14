@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: osrf/ros:melodic-ros-core-bionic
+      - image: osrf/ros:melodic-desktop-bionic
     steps:
       - checkout:
           path: src
