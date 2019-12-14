@@ -26,6 +26,7 @@ jobs:
       - run:
           name: Run tests
           command: |
+            source /opt/ros/melodic/setup.bash
             source devel/setup.bash
             catkin run_tests gazebo_server -j1 --no-deps --no-status
             catkin_test_results build

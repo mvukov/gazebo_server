@@ -47,7 +47,7 @@ TEST_F(TestGazeboServerConfig, ServerInitFailure) {
 }
 
 class TestGazeboServer : public ::testing::Test {
- protected:
+ public:
   static void SetUpTestSuite() {
     config_.verbose = true;
 
@@ -85,8 +85,13 @@ class TestGazeboServer : public ::testing::Test {
     ASSERT_TRUE(server_->Start());
   }
 
+  static void SetUpTestCase() { SetUpTestSuite(); }
+
   static void TearDownTestSuite() { server_.reset(); }
 
+  static void TearDownTestCase() { TearDownTestSuite(); }
+
+ protected:
   void SetUp() override { ASSERT_TRUE(server_->Reset()); }
 
   static GazeboServer::Config config_;
