@@ -33,6 +33,8 @@ class GazeboServer {
   struct Config {
     static constexpr double kAsFastAsPossible = 0.0;
 
+    Config();
+
     std::string world_path = "worlds/empty.world";
     std::string model_sdf_xml;
 

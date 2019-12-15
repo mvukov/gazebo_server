@@ -34,6 +34,8 @@ TEST_F(TestGazeboServerConfig, Success) {
   EXPECT_FALSE(config_.Validate());
   config_.model_sdf_xml = "foo";
   EXPECT_TRUE(config_.Validate());
+  EXPECT_EQ(Vector3d::Zero(), config_.init_world_p_body);
+  EXPECT_EQ(Vector3d::Zero(), config_.init_world_rpy_body);
 }
 
 TEST_F(TestGazeboServerConfig, WorldEmptyFailure) {

@@ -28,6 +28,11 @@ extern "C" void SilenceOdeMessages(int, const char*, va_list) {}
 
 namespace gazebo_server {
 
+GazeboServer::Config::Config() {
+  init_world_p_body.setZero();
+  init_world_rpy_body.setZero();
+}
+
 bool GazeboServer::Config::Validate() const {
   if (world_path.empty()) {
     gzerr << "Got an empty world configuration file path!" << std::endl;
