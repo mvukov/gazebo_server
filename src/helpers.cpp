@@ -13,7 +13,6 @@
 // limitations under the License.
 #include "gazebo_server/helpers.h"
 
-#include <gazebo/common/Console.hh>
 #include <sdf/parser_urdf.hh>
 #include <tinyxml.h>
 
@@ -29,8 +28,8 @@ std::string UrdfToSdf(const std::string& model_urdf_xml) {
     sdf::URDF2SDF urdf2sdf;
     model_sdf_doc = urdf2sdf.InitModelDoc(&model_urdf_doc);
   } catch (const std::exception& ex) {
-    gzerr << "Failed to convert URDF to SDF! Reason: " << ex.what()
-          << std::endl;
+    std::cerr << "Failed to convert URDF to SDF! Reason: " << ex.what()
+              << std::endl;
     return model_sdf_xml;
   }
 
@@ -45,12 +44,13 @@ std::string GetRobotName(const std::string& model_sdf_xml) {
   model_doc.Parse(model_sdf_xml.c_str());
   TiXmlElement* sdf_element = model_doc.FirstChildElement("sdf");
   if (!sdf_element) {
-    gzerr << "Got an invalid SDF XML (no sdf tag)!" << std::endl;
+    std::cerr << "Got an invalid SDF XML (no sdf tag)!" << std::endl;
     return std::string();
   }
   TiXmlElement* model_element = sdf_element->FirstChildElement("model");
   if (!model_element || !model_element->Attribute("name")) {
-    gzerr << "Got an invalid SDF XML (no model tag and/or name)!" << std::endl;
+    std::cerr << "Got an invalid SDF XML (no model tag and/or name)!"
+              << std::endl;
     return std::string();
   }
   return std::string(model_element->Attribute("name"));

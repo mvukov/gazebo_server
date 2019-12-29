@@ -47,7 +47,7 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
     "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 endif()
 
-add_compile_options(-std=c++17 -Wall -Wextra -Werror)
+add_compile_options(-Wall -Wextra -Werror)
 
 add_library(${PROJECT_NAME}
   src/gazebo_server.cpp
@@ -56,6 +56,7 @@ add_library(${PROJECT_NAME}
   src/link.cpp
 )
 target_link_libraries(${PROJECT_NAME} ${SERVER_LIBRARIES})
+target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
 
 install(TARGETS ${PROJECT_NAME}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}

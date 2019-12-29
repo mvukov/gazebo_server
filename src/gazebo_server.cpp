@@ -34,12 +34,24 @@ GazeboServer::Config::Config() {
 }
 
 bool GazeboServer::Config::Validate() const {
+  for (const auto& path : media_paths) {
+    if (path.empty()) {
+      std::cerr << "Got an empty media path!" << std::endl;
+      return false;
+    }
+  }
+  for (const auto& path : model_paths) {
+    if (path.empty()) {
+      std::cerr << "Got an empty model path!" << std::endl;
+      return false;
+    }
+  }
   if (world_path.empty()) {
-    gzerr << "Got an empty world configuration file path!" << std::endl;
+    std::cerr << "Got an empty world configuration file path!" << std::endl;
     return false;
   }
   if (model_sdf_xml.empty()) {
-    gzerr << "Got an empty empty model XML file!" << std::endl;
+    std::cerr << "Got an empty model XML file!" << std::endl;
     return false;
   }
   return true;
@@ -62,7 +74,6 @@ bool GazeboServer::Start() {
   if (robot_name_.empty()) {
     return false;
   }
-  gzmsg << "Loading robot model with name: " << robot_name_ << std::endl;
 
   std::vector<std::string> gazebo_args;
   if (config_.verbose) {
@@ -77,6 +88,13 @@ bool GazeboServer::Start() {
     gzerr << "Failed to set up server!" << std::endl;
     ShutDown();
     return false;
+  }
+
+  for (const auto& path : config_.media_paths) {
+    gazebo::common::SystemPaths::Instance()->AddGazeboPaths(path);
+  }
+  for (const auto& path : config_.model_paths) {
+    gazebo::common::SystemPaths::Instance()->AddModelPaths(path);
   }
 
   gzmsg << "Loading world..." << std::endl;

@@ -48,9 +48,21 @@ TEST_F(TestGazeboServerConfig, ServerInitFailure) {
   EXPECT_FALSE(server.Start());
 }
 
+TEST_F(TestGazeboServerConfig, MediaPathFailure) {
+  config_.model_sdf_xml = "bar";
+  config_.media_paths = {"/a/b/c/", ""};
+  EXPECT_FALSE(config_.Validate());
+}
+
+TEST_F(TestGazeboServerConfig, ModelPathFailure) {
+  config_.model_sdf_xml = "qux";
+  config_.model_paths = {"", "/d/e/f", ""};
+  EXPECT_FALSE(config_.Validate());
+}
+
 class TestGazeboServer : public ::testing::Test {
  public:
-  static void SetUpTestSuite() {
+  static void SetUpTestCase() {
     config_.verbose = true;
 
     const std::string test_data_path(TEST_DATA_PATH);
@@ -87,11 +99,7 @@ class TestGazeboServer : public ::testing::Test {
     ASSERT_TRUE(server_->Start());
   }
 
-  static void SetUpTestCase() { SetUpTestSuite(); }
-
-  static void TearDownTestSuite() { server_.reset(); }
-
-  static void TearDownTestCase() { TearDownTestSuite(); }
+  static void TearDownTestCase() { server_.reset(); }
 
  protected:
   void SetUp() override { ASSERT_TRUE(server_->Reset()); }

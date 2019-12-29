@@ -62,6 +62,8 @@ PYBIND11_MODULE(py_gazebo_server, m) {
   py::class_<GazeboServer::Config>(server, "Config")
       .def(py::init<>())
       .def("validate", &GazeboServer::Config::Validate)
+      .def_readwrite("media_paths", &GazeboServer::Config::media_paths)
+      .def_readwrite("model_paths", &GazeboServer::Config::model_paths)
       .def_readwrite("world_path", &GazeboServer::Config::world_path)
       .def_readwrite("model_sdf_xml", &GazeboServer::Config::model_sdf_xml)
       .def_readwrite("init_world_p_body",

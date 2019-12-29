@@ -17,6 +17,7 @@
 #include <functional>
 #include <memory>
 #include <string>
+#include <vector>
 
 #include <Eigen/Core>
 #include <gazebo/common/CommonTypes.hh>
@@ -34,6 +35,9 @@ class GazeboServer {
     static constexpr double kAsFastAsPossible = 0.0;
 
     Config();
+
+    std::vector<std::string> media_paths;
+    std::vector<std::string> model_paths;
 
     std::string world_path = "worlds/empty.world";
     std::string model_sdf_xml;
