@@ -24,6 +24,37 @@ import rospkg
 from gazebo_server import py_gazebo_server
 
 
+class ServerWithCallbacks:
+
+  def __init__(self, package_path):
+    config = py_gazebo_server.GazeboServer.Config()
+    config.verbose = True
+    config.world_path = os.path.join(package_path, 'test_data',
+                                     'empty_test.world')
+
+    model_sdf_path = os.path.join(package_path, 'test_data',
+                                  'differential_drive', 'model.sdf')
+    with open(model_sdf_path, 'r') as stream:
+      config.model_sdf_xml = stream.read()
+
+    self.server = py_gazebo_server.GazeboServer(config)
+    if not self.server.start():
+      raise RuntimeError('Failed to start the server!')
+
+    self.num_on_world_update_begin_calls = 0
+    self.num_on_world_update_end_calls = 0
+
+  def on_world_update_begin(self):
+    self.num_on_world_update_begin_calls += 1
+
+  def on_world_update_end(self):
+    self.num_on_world_update_end_calls += 1
+
+  def run_for(self, num_steps):
+    return self.server.run_for(num_steps, self.on_world_update_begin,
+                               self.on_world_update_end)
+
+
 class TestGazeboServer(unittest.TestCase):
 
   def setUp(self):
@@ -69,6 +100,15 @@ class TestGazeboServer(unittest.TestCase):
 
     with self.assertRaises(RuntimeError):
       server.get_joint('efg')
+
+  def test_run_for(self):
+    if os.uname().sysname == 'Darwin':
+      print('Running with callbacks does not work properly on macOS!')
+      return
+    test_server = ServerWithCallbacks(self.package_path)
+    self.assertTrue(test_server.run_for(2))
+    self.assertEqual(2, test_server.num_on_world_update_begin_calls)
+    self.assertEqual(2, test_server.num_on_world_update_end_calls)
 
 
 if __name__ == '__main__':
