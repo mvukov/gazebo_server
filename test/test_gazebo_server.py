@@ -102,9 +102,6 @@ class TestGazeboServer(unittest.TestCase):
       server.get_joint('efg')
 
   def test_run_for(self):
-    if os.uname().sysname == 'Darwin':
-      print('Running with callbacks does not work properly on macOS!')
-      return
     test_server = ServerWithCallbacks(self.package_path)
     self.assertTrue(test_server.run_for(2))
     self.assertEqual(2, test_server.num_on_world_update_begin_calls)

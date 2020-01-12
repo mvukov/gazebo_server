@@ -80,8 +80,21 @@ PYBIND11_MODULE(py_gazebo_server, m) {
   server.def(py::init<const GazeboServer::Config&>())
       .def("start", &GazeboServer::Start)
       .def("step", &GazeboServer::Step)
-      .def("run_for", &GazeboServer::RunFor, "num_steps"_a,
-           "on_world_update_begin"_a, "on_world_update_end"_a)
+      .def(
+          "run_for",
+          [](GazeboServer& self, int num_steps,
+             GazeboServer::Callback on_world_update_begin,
+             GazeboServer::Callback* on_world_update_end) {
+            return self.RunFor(
+                num_steps,
+                [&on_world_update_begin]() { on_world_update_begin(); },
+                [on_world_update_end]() {
+                  if (on_world_update_end != nullptr) {
+                    (*on_world_update_end)();
+                  }
+                });
+          },
+          "num_steps"_a, "on_world_update_begin"_a, "on_world_update_end"_a)
       .def("reset", &GazeboServer::Reset)
       .def_property_readonly("simulation_time",
                              &GazeboServer::GetSimulationTime)
