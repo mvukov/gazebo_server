@@ -80,15 +80,21 @@ PYBIND11_MODULE(py_gazebo_server, m) {
   server.def(py::init<const GazeboServer::Config&>())
       .def("start", &GazeboServer::Start)
       .def("step", &GazeboServer::Step)
-
-      // TODO(mvukov) Investigate further why this does not work.
-      // On macOS I get segfault at exit, RenderEngine/WindowManager related.
-      // The server exits cleanly, but some global Gazebo objects complain.
-      // On Ubuntu 18.04 (CI) the Python test does not exit on it's own.
-      // I need to do CTRL+C.
-      // .def("run_for", &GazeboServer::RunFor, "num_steps"_a,
-      //      "on_world_update_begin"_a, "on_world_update_end"_a)
-
+      .def(
+          "run_for",
+          [](GazeboServer& self, int num_steps,
+             GazeboServer::Callback on_world_update_begin,
+             GazeboServer::Callback* on_world_update_end) {
+            return self.RunFor(
+                num_steps,
+                [&on_world_update_begin]() { on_world_update_begin(); },
+                [on_world_update_end]() {
+                  if (on_world_update_end != nullptr) {
+                    (*on_world_update_end)();
+                  }
+                });
+          },
+          "num_steps"_a, "on_world_update_begin"_a, "on_world_update_end"_a)
       .def("reset", &GazeboServer::Reset)
       .def_property_readonly("simulation_time",
                              &GazeboServer::GetSimulationTime)
