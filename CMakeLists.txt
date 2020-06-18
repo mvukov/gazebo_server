@@ -86,5 +86,6 @@ if (CATKIN_ENABLE_TESTING)
   target_compile_definitions(test_gazebo_server PRIVATE
     -DTEST_DATA_PATH="${TEST_DATA_PATH}")
 
-  catkin_add_nosetests(test/test_gazebo_server.py)
+  catkin_add_nosetests(test/test_gazebo_server.py
+                       WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 endif()

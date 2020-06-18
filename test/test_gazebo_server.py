@@ -19,7 +19,6 @@ import os
 import unittest
 
 import numpy
-import rospkg
 
 from gazebo_server import py_gazebo_server
 
@@ -59,8 +58,7 @@ class TestGazeboServer(unittest.TestCase):
 
   def setUp(self):
     unittest.TestCase.setUp(self)
-    rospack = rospkg.RosPack()
-    self.package_path = rospack.get_path('gazebo_server')
+    self.package_path = os.getcwd()
 
   def test_api(self):
     config = py_gazebo_server.GazeboServer.Config()
